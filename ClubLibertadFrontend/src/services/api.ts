@@ -119,6 +119,7 @@ export interface Inscripcion {
   fechaSolicitud: string;
   fechaRespuesta?: string;
   fechaVencimiento: string;
+  
 }
 
 export interface InscripcionRequest {

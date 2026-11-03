@@ -24,6 +24,47 @@ interface Props {
 const iniciales = (nombre?: string, apellido?: string) =>
   `${nombre?.[0] || ""}${apellido?.[0] || ""}`.toUpperCase() || "EP";
 
+
+function Avatar({
+  nombre,
+  apellido,
+  foto,
+  size = 36,
+}: {
+  nombre?: string;
+  apellido?: string;
+  foto?: string | null;
+  size?: number;
+}) {
+  const [error, setError] = useState(false);
+  const mostrarFoto = Boolean(foto) && !error;
+
+  return (
+    <span
+      className="avatar"
+      aria-hidden="true"
+      style={{ width: size, height: size, overflow: "hidden" }}
+    >
+      {mostrarFoto ? (
+        <img
+          src={foto!}
+          alt=""
+          onError={() => setError(true)}
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            borderRadius: "50%",
+            display: "block",
+          }}
+        />
+      ) : (
+        iniciales(nombre, apellido)
+      )}
+    </span>
+  );
+}
+
 const ENLACES = [
   { label: "Inicio", to: "/", icon: Home },
   { label: "Concursos", to: "/concursos", icon: Trophy },
@@ -46,6 +87,9 @@ export default function EpHeader({ tema, alternar, mostrarTema = true }: Props) 
   const nombre = usuario?.nombre || (esAdmin ? "Administrador" : "Bailarín");
   const apellido = usuario?.apellido || "";
   const panelUrl = esAdmin ? "/admin" : "/panel";
+
+
+  const foto = usuario?.fotografiaUrl ?? null; 
 
   useEffect(() => {
     if (!autenticado) return;
@@ -151,9 +195,7 @@ export default function EpHeader({ tema, alternar, mostrarTema = true }: Props) 
                 className="me"
                 aria-label="Ver mi perfil público"
               >
-                <span className="avatar" aria-hidden="true">
-                  {iniciales(nombre, apellido)}
-                </span>
+                <Avatar nombre={nombre} apellido={apellido} foto={foto} />
                 <span className="nav-user-name">{nombre}</span>
               </Link>
 
@@ -210,17 +252,15 @@ export default function EpHeader({ tema, alternar, mostrarTema = true }: Props) 
 
           {autenticado && (
           <div className="mobile-user">
-            <button
-              className="mobile-avatar-btn"
-              type="button"
-              onClick={() => setAvatarAbierto((prev) => !prev)}
-              aria-label="Opciones de usuario"
-              aria-expanded={avatarAbierto}
-            >
-              <span className="avatar" aria-hidden="true">
-                {iniciales(nombre, apellido)}
-              </span>
-            </button>
+           <button
+  className="mobile-avatar-btn"
+  type="button"
+  onClick={() => setAvatarAbierto((prev) => !prev)}
+  aria-label="Opciones de usuario"
+  aria-expanded={avatarAbierto}
+>
+  <Avatar nombre={nombre} apellido={apellido} foto={foto} />
+</button>
 
             {avatarAbierto && (
               <>
@@ -230,9 +270,7 @@ export default function EpHeader({ tema, alternar, mostrarTema = true }: Props) 
                 />
                 <div className="ep-avatar-menu" role="menu">
                   <div className="ep-avatar-head">
-                    <span className="avatar" aria-hidden="true">
-                      {iniciales(nombre, apellido)}
-                    </span>
+                    <Avatar nombre={nombre} apellido={apellido} foto={foto} size={40} />
                     <div>
                       <strong>{nombre} {apellido}</strong>
                       <span>{esAdmin ? "Administrador" : "Bailarín"}</span>

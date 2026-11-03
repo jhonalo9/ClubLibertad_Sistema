@@ -47,6 +47,10 @@ const etiquetaInscripcion = (estado: Inscripcion["estado"]) => {
   }
 };
 
+
+
+
+
 export default function PanelBailarin() {
   const { tema, alternar } = useTheme();
   const usuario = authService.obtenerUsuario();
